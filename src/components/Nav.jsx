@@ -1,10 +1,27 @@
+import PropTypes from 'prop-types';
 import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import logo from '../assets/logo.svg';
+import { propTypes } from 'react-bootstrap/esm/Image';
 
-function FLNav() {
+function FLNav(props) {
+	const handleSearchClick = () => {
+		const searchInput = document.querySelector('#searchInput');
+
+		const url = `https://www.omdbapi.com/?apikey=${props.apiKey}&s=${searchInput.value}`;
+
+		getFilms(url)
+	}
+
+	const getFilms = async (url) => {
+		const response = await fetch(url);
+		const data = await response.json();
+
+		props.setFilms(data.Search);
+	}
+
 	return (
 		<Navbar collapseOnSelect expand='lg' className='bg-body-tertiary'>
 			<Container>
@@ -20,13 +37,16 @@ function FLNav() {
 						inline
 						className='ms-auto d-flex align-items-center flnav-searchbar'>
 						<Form.Control
+							id='searchInput'
 							type='text'
 							placeholder='Search'
 							className='mr-sm-2 flnav-search-input'
+							onKeyDown={handleSearchClick}
 						/>
 						<Button
-							type='submit'
-							className='text-white flnav-search-button'>
+							type='button'
+							className='text-white flnav-search-button'
+							onClick={handleSearchClick}>
 							<svg
 								xmlns='http://www.w3.org/2000/svg'
 								width='16'
@@ -43,5 +63,10 @@ function FLNav() {
 		</Navbar>
 	);
 }
+
+FLNav.propTypes = {
+	apiKey: propTypes.string,
+	setFilms: PropTypes.func
+};
 
 export default FLNav;
