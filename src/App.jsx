@@ -8,8 +8,6 @@ function App() {
 
 	const [films, setFilms] = useState([]);
 
-	console.log(films);
-
 	return (
 		<>
 			<FLNav apiKey={API_KEY} setFilms={setFilms} />

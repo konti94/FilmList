@@ -4,22 +4,30 @@ import Navbar from 'react-bootstrap/Navbar';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import logo from '../assets/logo.svg';
-import { propTypes } from 'react-bootstrap/esm/Image';
 
 function FLNav(props) {
+	const {apiKey, setFilms} = props;
+
 	const handleSearchClick = () => {
-		const searchInput = document.querySelector('#searchInput');
-
-		const url = `https://www.omdbapi.com/?apikey=${props.apiKey}&s=${searchInput.value}`;
-
-		getFilms(url)
+		getFilms()
 	}
 
-	const getFilms = async (url) => {
+	const handleSearchInputKeyDown = (e) => {
+		e.preventDefault();
+
+		if (e.key == 'Enter') {
+			getFilms()
+		}
+	}
+
+	const getFilms = async () => {
+		const searchInput = document.querySelector('#searchInput');
+		const url = `https://www.omdbapi.com/?apikey=${apiKey}&s=${searchInput.value}`;
+
 		const response = await fetch(url);
 		const data = await response.json();
 
-		props.setFilms(data.Search);
+		setFilms(data.Search);
 	}
 
 	return (
@@ -34,14 +42,14 @@ function FLNav(props) {
 				<Navbar.Toggle aria-controls='responsive-navbar-nav' />
 				<Navbar.Collapse id='responsive-navbar-nav'>
 					<Form
-						inline
+						inline="true"
 						className='ms-auto d-flex align-items-center flnav-searchbar'>
 						<Form.Control
 							id='searchInput'
 							type='text'
 							placeholder='Search'
 							className='mr-sm-2 flnav-search-input'
-							onKeyDown={handleSearchClick}
+							onKeyDown={handleSearchInputKeyDown}
 						/>
 						<Button
 							type='button'
@@ -65,7 +73,7 @@ function FLNav(props) {
 }
 
 FLNav.propTypes = {
-	apiKey: propTypes.string,
+	apiKey: PropTypes.string,
 	setFilms: PropTypes.func
 };
 
